@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Library_App.Views.PriceListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Library_App.Services"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid x:Name="PriceListsDataGrid" 
+                  Style="{StaticResource Table}"
+                  AutoGenerateColumns="False" 
+                  SelectionMode="Extended"
+                  SelectionUnit="FullRow"
+                  SelectedItem="{Binding SelectedService}"
+                  ItemsSource="{Binding PriceList}" 
+                  CanUserAddRows="False"
+                  Margin="0"
+                  IsReadOnly="True"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  ColumnWidth="*" AreRowDetailsFrozen="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="НАЗВАНИЕ УСЛУГИ" Binding="{Binding NameService}"  Width="Auto"/>
+                <DataGridTextColumn Header="СТОИМОСТЬ" Binding="{Binding Price, StringFormat={}{0:C}}" Width="*"/>
+                <DataGridTemplateColumn Header="ДЕЙСТВИЯ" Width="Auto">
+                    <DataGridTemplateColumn.Visibility>
+                        <Binding Source="{x:Static local:AuthService.IsReader}" Converter="{StaticResource InverseBoolToVisibilityConverter}" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ConverterParameter>inverse</Binding.ConverterParameter>
+                        </Binding>
+                    </DataGridTemplateColumn.Visibility>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="РЕДАКТИРОВАТЬ" 
+                                    Background="#FFFFFCD6"
+                                    Command="{Binding DataContext.EditServiceCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Margin="2"
+                                    Padding="5"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

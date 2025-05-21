@@ -1,0 +1,62 @@
+﻿<Window x:Class="Library_App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Library_App"
+        mc:Ignorable="d"
+        Title="Lib" MinHeight="500" MinWidth="850" Background="#FFB5D5CA">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.10*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.10*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#FFFFFCD6">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Image Source="/Views/Images/Lib.png" Width="80" Margin="20,0,0,0"/>
+                    <Grid MinHeight="40">
+                        <Button Click="Logout_Click" Content="ВЫХОД" Style="{StaticResource ButtonClick}" TabIndex="1" VerticalAlignment="Top"/>
+                        <Button x:Name="btnRegister" Content="РЕГИСТРАЦИЯ" Style="{StaticResource ButtonClick}" TabIndex="2" Click="Register_Click" VerticalAlignment="Bottom"/>
+                    </Grid>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <ComboBox Name="NavigationComboBox"
+                      Style="{StaticResource ComboBoxTub}"
+                      TabIndex ="0"
+                      SelectedIndex="0"
+                      SelectionChanged="NavigationComboBox_SelectionChanged"
+                      Margin="5">
+                        <ComboBoxItem Content="ВЫБОР ТАБЛИЦЫ"/>
+                        <ComboBoxItem Content="ЧИТАТЕЛИ"/>
+                        <ComboBoxItem Content="КНИГИ"/>
+                        <ComboBoxItem Content="ВЫДАЧА КНИГ"/>
+                        <ComboBoxItem Content="БРОНИРОВАНИЕ КНИГ"/>
+                        <ComboBoxItem Content="ПРАЙС-ЛИСТ"/>
+                        <ComboBoxItem Content="ОПЛАТА УСЛУГ"/>
+                        <ComboBoxItem Content="ЭКСПОНАТЫ"/>
+                        <ComboBoxItem Content="МЕРОПРИЯТИЯ"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Grid.Row="1">
+            <Grid VerticalAlignment="Center" Width="300">
+                <TextBlock Text="ДОБРО ПОЖАЛОВАТЬ, " FontSize="18" Foreground="White" FontWeight="ExtraBold" HorizontalAlignment="Left"/>
+                <TextBlock Name="Welcome" FontSize="18" Foreground="White" FontWeight="ExtraBold" HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+        <Border Grid.Row="1">
+            <Frame Name="MainFrameTable"  NavigationUIVisibility="Hidden" TabIndex="9"/>
+        </Border>
+        <Border Grid.Row="2" Background="#FFFFFCD6">
+            <Grid Name="GridButton" Visibility="Hidden" MaxWidth="500">
+                <Button Name="btnAdd" Style="{StaticResource ButtonClick}" Command="{Binding AddCommand}" Content="ДОБАВЛЕНИЕ" HorizontalAlignment="Left"/>
+                <Button Name="btnDel" Style="{StaticResource ButtonClick}" Command="{Binding DeleteCommand}" Content="УДАЛЕНИЕ" HorizontalAlignment="Center"/>
+                <Button Style="{StaticResource ButtonClick}" Command="{Binding ExportCommand}" Content="ЭКСПОРТ" HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

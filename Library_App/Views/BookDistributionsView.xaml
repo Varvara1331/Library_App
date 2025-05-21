@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="Library_App.Views.BookDistributionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Library_App.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <DataGrid x:Name="BookDistributionsDataGrid" 
+                  Style="{StaticResource Table}"
+                  AutoGenerateColumns="False" 
+                  SelectionMode="Extended"
+                  SelectionUnit="FullRow"
+                  SelectedItem="{Binding SelectedBookDistribution}"
+                  ItemsSource="{Binding BookDistributions}" 
+                  CanUserAddRows="False"
+                  Margin="0"
+                  IsReadOnly="True"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  ColumnWidth="*" AreRowDetailsFrozen="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ДАТА ВЫДАЧИ" Binding="{Binding IssuanceDate, StringFormat={}{0:dd.MM.yyyy}}"  Width="Auto"/>
+                <DataGridTextColumn Header="ДАТА ВОЗВРАТА" Binding="{Binding ReturnDate, StringFormat={}{0:dd.MM.yyyy}}"  Width="Auto"/>
+                <DataGridTextColumn Header="№ ЧИТАТЕЛЬСКОГО БИЛЕТА" Binding="{Binding ReaderTicket}" Width="*"/>
+                <DataGridTemplateColumn Header="ВЫДАВАЕМЫЕ КНИГИ" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding BookDistributionBooks}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding IdBookNavigation.TitleBook}" Margin="2"/>
+                                            <TextBlock Text=" - (" Margin="2"/>
+                                            <TextBlock Text="{Binding IdBookNavigation.AuthorBook}" Margin="2"/>
+                                            <TextBlock Text=")" Margin="2"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="ДЕЙСТВИЯ" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="РЕДАКТИРОВАТЬ" 
+                                    Background="#FFFFFCD6"
+                                    Command="{Binding DataContext.EditBookDistributionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Margin="2"
+                                    Padding="5"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

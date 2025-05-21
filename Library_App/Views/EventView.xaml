@@ -1,0 +1,66 @@
+﻿<Page x:Class="Library_App.Views.EventView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Library_App.Converters"
+      mc:Ignorable="d"
+      d:DesignHeight="500" d:DesignWidth="800"
+      Title="EventView">
+
+    <Page.Resources>
+        <local:DateOnlyToDateTimeConverter x:Key="DateOnlyToDateTimeConverter"/>
+    </Page.Resources>
+    <Grid>
+        <Grid Background="#FFE0A9AF" MaxWidth="1000">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
+                <TextBlock Text="РЕДАКТИРОВАНИЕ"  FontSize="18" FontWeight="Bold" Foreground="White" TextAlignment="Center"/>
+                <TextBlock Text="МЕРОПРИЯТИЯ" FontSize="18" FontWeight="Bold" Foreground="White" TextAlignment="Center"/>
+                <TextBlock Text="{Binding IdEvent, UpdateSourceTrigger=PropertyChanged}" FontSize="15" FontWeight="Bold" Margin="0,5,0,0" Foreground="White"/>
+                <Button Content="СОХРАНИТЬ" Style="{StaticResource ButtonClick}" TabIndex="8" Command="{Binding AddEventCommand}" Width="100" Height="29" Margin="0,10,0,0"/>
+                <Button Content="НАЗАД" Style="{StaticResource ButtonClick}" TabIndex="9" Click="GoBackButton_Click" Width="100" Height="29" Margin="0,10,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0">
+                    <TextBlock Text="ВЫБЕРИТЕ ДАТУ ПРОВЕДЕНИЯ:" Margin="0,10,0,0" Foreground="White"/>
+                    <DatePicker SelectedDate="{Binding EventDate, UpdateSourceTrigger=PropertyChanged}" TabIndex="0" Width="200" Height="26" Background="#FFB5D5CA" Foreground="Black"/>
+                    <TextBlock Text="ВВЕДИТЕ НАЗВАНИЕ:" Margin="0,10,0,0" Foreground="White"/>
+                    <TextBox Style="{StaticResource Text}" Text="{Binding EventName, UpdateSourceTrigger=PropertyChanged}" TabIndex="1" Width="200" Height="26" Foreground="White"/>
+                    <TextBlock Text="ВВЕДИТЕ МЕСТО ПРОВЕДЕНИЯ:" Margin="0,10,0,0" Foreground="White"/>
+                    <TextBox Style="{StaticResource Text}" Text="{Binding EventLocation, UpdateSourceTrigger=PropertyChanged}" TabIndex="2" Width="200" Height="26" Foreground="White"/>
+                    <TextBlock Text="ВВЕДИТЕ ТИП:" Margin="0,10,0,0" Foreground="White"/>
+                    <TextBox Style="{StaticResource Text}" Text="{Binding EventType, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" Width="200" Height="26" Foreground="White"/>
+                    <TextBlock Text="ВВЕДИТЕ ОПИСАНИЕ:" Margin="0,10,0,0" Foreground="White"/>
+                    <TextBox Style="{StaticResource Text}" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TabIndex="4" Width="200" Height="26" Foreground="White"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0">
+                    <TextBlock Text="ВЫСТАВОЧНЫЕ ЭКСПОНАТЫ" FontSize="15" FontWeight="Bold" Foreground="White" TextAlignment="Center"/>
+
+                    <ItemsControl ItemsSource="{Binding EventExhibits}" Margin="10,10,10,10" TabIndex="5">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,5" HorizontalAlignment="Center" Background="#FFFFFCD6" Width="380">
+                                    <TextBlock Text="{Binding IdExhibitNavigation.Title}" Margin="5"/>
+                                    <TextBlock Text="{Binding IdExhibitNavigation.Author}" Margin="5"/>
+
+                                    <Button Content="УДАЛИТЬ" Style="{StaticResource ButtonClick}" Command="{Binding DataContext.RemoveEventExhibitCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}" Margin="5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <StackPanel Orientation="Vertical" Margin="10,10,10,10">
+                        <ComboBox ItemsSource="{Binding AvailableExhibitsDisplay}"  TabIndex="6"
+                              SelectedValue="{Binding SelectedExhibitDisplay, UpdateSourceTrigger=PropertyChanged}" 
+                              Width="200" Height="26" 
+                              Background="#FFB5D5CA" Foreground="Black"/>
+                        <Button TabIndex="7" Content="ДОБАВИТЬ" Style="{StaticResource ButtonClick}" Command="{Binding AddEventExhibitCommand}" 
+                            Margin="5" Height="29"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
+
