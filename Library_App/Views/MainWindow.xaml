@@ -17,7 +17,6 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Image Source="/Views/Images/Lib.png" Width="80" Margin="20,0,0,0"/>
-                    <Image Source="/Views/Images/Lib.png" Width="80" Margin="20,0,0,0"/>
                     <Grid MinHeight="40">
                         <Button Click="Logout_Click" Content="ВЫХОД" Style="{StaticResource ButtonClick}" TabIndex="1" VerticalAlignment="Top"/>
                         <Button x:Name="btnRegister" Content="РЕГИСТРАЦИЯ" Style="{StaticResource ButtonClick}" TabIndex="2" Click="Register_Click" VerticalAlignment="Bottom"/>
