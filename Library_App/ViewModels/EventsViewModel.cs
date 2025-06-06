@@ -112,28 +112,38 @@ namespace Library_App.ViewModels
             {
                 var worksheet = workbook.Worksheets.Add("Events");
 
-                worksheet.Cell(1, 1).Value = "ID МЕРОПРИЯТИЯ";
-                worksheet.Cell(1, 2).Value = "ДАТА ПРОВЕДЕНИЯ";
-                worksheet.Cell(1, 3).Value = "НАЗВАНИЕ";
-                worksheet.Cell(1, 4).Value = "МЕСТО ПРОВЕДЕНИЯ";
-                worksheet.Cell(1, 5).Value = "ТИП";
-                worksheet.Cell(1, 6).Value = "ОПИСАНИЕ";
+                worksheet.Cell(1, 1).Value = "ДАТА ПРОВЕДЕНИЯ";
+                worksheet.Cell(1, 2).Value = "НАЗВАНИЕ";
+                worksheet.Cell(1, 3).Value = "МЕСТО ПРОВЕДЕНИЯ";
+                worksheet.Cell(1, 4).Value = "ТИП";
+                worksheet.Cell(1, 5).Value = "ОПИСАНИЕ";
+                worksheet.Cell(1, 6).Value = "ЭКСПОНАТЫ";
 
 
                 for (int i = 0; i < Events.Count; i++)
                 {
-                    worksheet.Cell(i + 2, 1).Value = Events[i].IdEvent;
-                    worksheet.Cell(i + 2, 2).Value = Events[i].EventDate.ToString();
-                    worksheet.Cell(i + 2, 3).Value = Events[i].EventName;
-                    worksheet.Cell(i + 2, 4).Value = Events[i].EventLocation;
-                    worksheet.Cell(i + 2, 5).Value = Events[i].EventType;
-                    worksheet.Cell(i + 2, 6).Value = Events[i].Description;
+                    var Event = Events[i];
+                    worksheet.Cell(i + 2, 1).Value = Events[i].EventDate.ToString();
+                    worksheet.Cell(i + 2, 2).Value = Events[i].EventName;
+                    worksheet.Cell(i + 2, 3).Value = Events[i].EventLocation;
+                    worksheet.Cell(i + 2, 4).Value = Events[i].EventType;
+                    worksheet.Cell(i + 2, 5).Value = Events[i].Description;
+                    string events = string.Empty;
+                    if (Event.EventExhibits != null)
+                    {
+                        foreach (var EventExhibit in Event.EventExhibits)
+                        {
+                            if (EventExhibit?.IdExhibitNavigation != null)
+                            {
+                                events += $"{EventExhibit.IdExhibitNavigation.Title} - ({EventExhibit.IdExhibitNavigation.Author}), ";
+                            }
+                        }
+                        if (events.Length > 2) events = events.Remove(events.Length - 2);
+                    }
+                    worksheet.Cell(i + 2, 6).Value = events;
                 }
 
-                var headerRange = worksheet.Range("A1:D1");
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
-                worksheet.Columns().AdjustToContents();
+                FormatWorksheet(worksheet);
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
@@ -156,6 +166,20 @@ namespace Library_App.ViewModels
                     MessageBox.Show("Данные успешно экспортированы в Excel.", "Экспорт", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
+        }
+
+        private void FormatWorksheet(IXLWorksheet worksheet)
+        {
+            var headerRange = worksheet.Range(1, 1, 1, worksheet.Columns().Count());
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            var dataRange = worksheet.RangeUsed();
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            worksheet.Columns().AdjustToContents();
         }
     }
 }

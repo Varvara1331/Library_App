@@ -16,6 +16,7 @@
     </Page.Resources>
     <Grid>
         <Grid Background="#FFE0A9AF" MaxWidth="500">
+            <TextBlock Margin="10,10" Text="*СПРАВКА: В ПОЛЯ ФАМИЛИИ, ИМЕНИ МОЖНО ВВЕСТИ ТОЛЬКО БУКВЫ. В ПОЛЕ ТЕЛЕФОНА ВВОДЯТСЯ ТОЛЬКО ЦИФРЫ. В ПОЛЕ СУММЫ ШТРАФА ВВОДЯТСЯ ТОЛЬКО ЧИСЛА С ДРОБНОЙ ЧАСТЬЮ, ОТДЕЛЕННОЙ ЗАПЯТОЙ."  Foreground="White" TextWrapping="Wrap"/>
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
                 <TextBlock Text="РЕДАКТИРОВАНИЕ ЧИТАТЕЛЯ" FontSize="18" FontWeight="Bold" Margin="0,30,0,0" Foreground="White"/>
                     <TextBlock Text="{Binding ReaderTicket, UpdateSourceTrigger=PropertyChanged}" FontSize="15" FontWeight="Bold" Margin="0,5,0,0" Foreground="White"/>

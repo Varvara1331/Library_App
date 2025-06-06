@@ -109,28 +109,26 @@ namespace Library_App.ViewModels
                 var worksheet = workbook.Worksheets.Add("Readers");
 
                 worksheet.Cell(1, 1).Value = "№ ЧИТАТЕЛЬСКОГО БИЛЕТА";
-                worksheet.Cell(1, 2).Value = "ФАМИЛИЯ";
-                worksheet.Cell(1, 3).Value = "ИМЯ";
-                worksheet.Cell(1, 4).Value = "ДАТА РОЖДЕНИЯ";
+                worksheet.Cell(1, 2).Value = "ЧИТАТЕЛЬ";
+                worksheet.Cell(1, 3).Value = "ДАТА РОЖДЕНИЯ";
+                worksheet.Cell(1, 4).Value = "ВОЗРАСТ";
                 worksheet.Cell(1, 5).Value = "ТЕЛЕФОН";
                 worksheet.Cell(1, 6).Value = "ПОЧТА";
                 worksheet.Cell(1, 7).Value = "ШТРАФ";
 
                 for (int i = 0; i < Readers.Count; i++)
                 {
+                    var age = DateTime.Now.Year - Readers[i].BirthDate.Year;
                     worksheet.Cell(i + 2, 1).Value = Readers[i].ReaderTicket;
-                    worksheet.Cell(i + 2, 2).Value = Readers[i].LastName;
-                    worksheet.Cell(i + 2, 3).Value = Readers[i].FirstName;
-                    worksheet.Cell(i + 2, 4).Value = Readers[i].BirthDate.ToString();
+                    worksheet.Cell(i + 2, 2).Value = Readers[i].LastName + " " + Readers[i].FirstName;
+                    worksheet.Cell(i + 2, 3).Value = Readers[i].BirthDate.ToString();
+                    worksheet.Cell(i + 2, 4).Value = age;
                     worksheet.Cell(i + 2, 5).Value = Readers[i].Telephone;
                     worksheet.Cell(i + 2, 6).Value = Readers[i].Email;
                     worksheet.Cell(i + 2, 7).Value = Readers[i].Fine;
                 }
 
-                var headerRange = worksheet.Range("A1:G1");
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
-                worksheet.Columns().AdjustToContents();
+                FormatWorksheet(worksheet);
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
@@ -153,6 +151,20 @@ namespace Library_App.ViewModels
                     MessageBox.Show("Данные успешно экспортированы в Excel.", "Экспорт", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
+        }
+
+        private void FormatWorksheet(IXLWorksheet worksheet)
+        {
+            var headerRange = worksheet.Range(1, 1, 1, worksheet.Columns().Count());
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            var dataRange = worksheet.RangeUsed();
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            worksheet.Columns().AdjustToContents();
         }
     }
 }

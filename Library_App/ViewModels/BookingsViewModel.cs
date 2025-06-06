@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Library_App.Views;
 using ClosedXML.Excel;
 using System.Diagnostics;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace Library_App.ViewModels
 {
@@ -51,6 +52,7 @@ namespace Library_App.ViewModels
                 var bookings = await _context.Bookings
             .Include(b => b.BookingBooks)
             .ThenInclude(bb => bb.IdBookNavigation)
+            .Include(b => b.ReaderTicketNavigation)
             .AsNoTracking()
             .ToListAsync();
 
@@ -112,46 +114,41 @@ namespace Library_App.ViewModels
             {
                 var bookingsWorksheet = workbook.Worksheets.Add("Booking");
 
-                bookingsWorksheet.Cell(1, 1).Value = "ID бронирования";
-                bookingsWorksheet.Cell(1, 2).Value = "Дата бронирования";
-                bookingsWorksheet.Cell(1, 3).Value = "№ читательского билета";
+                bookingsWorksheet.Cell(1, 1).Value = "ДАТА БРОНИРОВАНИЯ";
+                bookingsWorksheet.Cell(1, 2).Value = "№ ЧИТАТЕЛЬСКОГО БИЛЕТА";
+                bookingsWorksheet.Cell(1, 3).Value = "ЧИТАТЕЛЬ";
+                bookingsWorksheet.Cell(1, 4).Value = "БРОНИРУЕМЫЕ КНИГИ";
 
                 for (int i = 0; i < Bookings.Count; i++)
                 {
                     var booking = Bookings[i];
-                    bookingsWorksheet.Cell(i + 2, 1).Value = booking.IdBooking;
-                    bookingsWorksheet.Cell(i + 2, 2).Value = booking.BookingDate.ToString("dd.MM.yyyy");
-                    bookingsWorksheet.Cell(i + 2, 3).Value = booking.ReaderTicket;
-                }
-
-                var bookingBooksWorksheet = workbook.Worksheets.Add("BookingBook");
-
-                bookingBooksWorksheet.Cell(1, 1).Value = "ID бронирования";
-                bookingBooksWorksheet.Cell(1, 2).Value = "ID книги";
-                bookingBooksWorksheet.Cell(1, 3).Value = "Название книги";
-                bookingBooksWorksheet.Cell(1, 4).Value = "Автор";
-                bookingBooksWorksheet.Cell(1, 5).Value = "Год издания";
-
-                int row = 2;
-                foreach (var booking in Bookings)
-                {
-                    foreach (var bookingBook in booking.BookingBooks)
+                    string reader = booking.ReaderTicketNavigation != null
+                            ? $"{booking.ReaderTicketNavigation.LastName} {booking.ReaderTicketNavigation.FirstName}"
+                                : "Читатель не найден";
+                    if (booking.ReaderTicketNavigation != null)
                     {
-                        bookingBooksWorksheet.Cell(row, 1).Value = bookingBook.IdBooking;
-                        bookingBooksWorksheet.Cell(row, 2).Value = bookingBook.IdBook;
-
-                        if (bookingBook.IdBookNavigation != null)
-                        {
-                            bookingBooksWorksheet.Cell(row, 3).Value = bookingBook.IdBookNavigation.TitleBook;
-                            bookingBooksWorksheet.Cell(row, 4).Value = bookingBook.IdBookNavigation.AuthorBook;
-                            bookingBooksWorksheet.Cell(row, 5).Value = bookingBook.IdBookNavigation.YearOfPublication;
-                        }
-                        row++;
+                        reader = $"{booking.ReaderTicketNavigation.LastName} {booking.ReaderTicketNavigation.FirstName}";
                     }
+                    bookingsWorksheet.Cell(i + 2, 1).Value = booking.BookingDate.ToString("dd.MM.yyyy");
+                    bookingsWorksheet.Cell(i + 2, 2).Value = booking.ReaderTicket;
+                    bookingsWorksheet.Cell(i + 2, 3).Value = reader;
+
+                    string books = string.Empty;
+                    if (booking.BookingBooks != null)
+                    {
+                        foreach (var BookingBook in booking.BookingBooks)
+                        {
+                            if (BookingBook?.IdBookNavigation != null)
+                            {
+                                books += $"{BookingBook.IdBookNavigation.TitleBook} - ({BookingBook.IdBookNavigation.AuthorBook}), ";
+                            }
+                        }
+                        if (books.Length > 2) books = books.Remove(books.Length - 2);
+                    }
+                    bookingsWorksheet.Cell(i + 2, 4).Value = books;
                 }
 
                 FormatWorksheet(bookingsWorksheet);
-                FormatWorksheet(bookingBooksWorksheet);
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {

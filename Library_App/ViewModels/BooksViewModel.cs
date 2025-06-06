@@ -106,33 +106,29 @@ namespace Library_App.ViewModels
             {
                 var worksheet = workbook.Worksheets.Add("Books");
 
-                worksheet.Cell(1, 1).Value = "ID";
-                worksheet.Cell(1, 2).Value = "НЗВАНИЕ";
-                worksheet.Cell(1, 3).Value = "АВТОР";
-                worksheet.Cell(1, 4).Value = "ИЗДАТЕЛЬСТВО";
-                worksheet.Cell(1, 5).Value = "ГОД ПУБЛИКАЦИИ";
-                worksheet.Cell(1, 6).Value = "ЖАНР";
-                worksheet.Cell(1, 7).Value = "ВОЗРАСТНЫЕ ОГРАНИЧЕНИЯ";
-                worksheet.Cell(1, 8).Value = "РАЗРЕШЕНИЕ НА ВЫДАЧУ";
-                worksheet.Cell(1, 9).Value = "КОЛИЧЕСТВО ЭКЗЕМПЛЯРОВ";
+                worksheet.Cell(1, 1).Value = "НАЗВАНИЕ";
+                worksheet.Cell(1, 2).Value = "АВТОР";
+                worksheet.Cell(1, 3).Value = "ИЗДАТЕЛЬСТВО";
+                worksheet.Cell(1, 4).Value = "ГОД ПУБЛИКАЦИИ";
+                worksheet.Cell(1, 5).Value = "ЖАНР";
+                worksheet.Cell(1, 6).Value = "ВОЗРАСТНЫЕ ОГРАНИЧЕНИЯ";
+                worksheet.Cell(1, 7).Value = "РАЗРЕШЕНИЕ НА ВЫДАЧУ";
+                worksheet.Cell(1, 8).Value = "КОЛИЧЕСТВО ЭКЗЕМПЛЯРОВ";
 
                 for (int i = 0; i < Books.Count; i++)
                 {
-                    worksheet.Cell(i + 2, 1).Value = Books[i].IdBook;
-                    worksheet.Cell(i + 2, 2).Value = Books[i].TitleBook;
-                    worksheet.Cell(i + 2, 3).Value = Books[i].AuthorBook;
-                    worksheet.Cell(i + 2, 4).Value = Books[i].Publishing;
-                    worksheet.Cell(i + 2, 5).Value = Books[i].YearOfPublication;
-                    worksheet.Cell(i + 2, 6).Value = Books[i].Genre;
-                    worksheet.Cell(i + 2, 7).Value = Books[i].AgeRestrictions;
-                    worksheet.Cell(i + 2, 8).Value = Books[i].PermissionToIssuance.ToString();
-                    worksheet.Cell(i + 2, 9).Value = Books[i].CopiesNumber;
+                    worksheet.Cell(i + 2, 1).Value = Books[i].TitleBook;
+                    worksheet.Cell(i + 2, 2).Value = Books[i].AuthorBook;
+                    worksheet.Cell(i + 2, 3).Value = Books[i].Publishing;
+                    worksheet.Cell(i + 2, 4).Value = Books[i].YearOfPublication;
+                    worksheet.Cell(i + 2, 5).Value = Books[i].Genre;
+                    worksheet.Cell(i + 2, 6).Value = Books[i].AgeRestrictions;
+                    worksheet.Cell(i + 2, 7).Value = Books[i].PermissionToIssuance.ToString();
+                    worksheet.Cell(i + 2, 8).Value = Books[i].CopiesNumber;
                 }
 
-                var headerRange = worksheet.Range("A1:I1");
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
-                worksheet.Columns().AdjustToContents();
+                FormatWorksheet(worksheet);
+
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
@@ -155,6 +151,20 @@ namespace Library_App.ViewModels
                     MessageBox.Show("Данные успешно экспортированы в Excel.", "Экспорт", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
+        }
+
+        private void FormatWorksheet(IXLWorksheet worksheet)
+        {
+            var headerRange = worksheet.Range(1, 1, 1, worksheet.Columns().Count());
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            var dataRange = worksheet.RangeUsed();
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            worksheet.Columns().AdjustToContents();
         }
     }
 }

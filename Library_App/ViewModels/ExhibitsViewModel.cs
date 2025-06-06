@@ -106,25 +106,21 @@ namespace Library_App.ViewModels
             {
                 var worksheet = workbook.Worksheets.Add("Exhibits");
 
-                worksheet.Cell(1, 1).Value = "ID ЭКСПОНАТА";
-                worksheet.Cell(1, 2).Value = "ДАТА СОЗДАНИЯ";
-                worksheet.Cell(1, 3).Value = "НАЗВАНИЕ";
-                worksheet.Cell(1, 4).Value = "АВТОР";
-                worksheet.Cell(1, 5).Value = "ТЕМАТИКА";
+                worksheet.Cell(1, 1).Value = "ДАТА СОЗДАНИЯ";
+                worksheet.Cell(1, 2).Value = "НАЗВАНИЕ";
+                worksheet.Cell(1, 3).Value = "АВТОР";
+                worksheet.Cell(1, 4).Value = "ТЕМАТИКА";
 
                 for (int i = 0; i < Exhibits.Count; i++)
                 {
-                    worksheet.Cell(i + 2, 1).Value = Exhibits[i].IdExhibit;
-                    worksheet.Cell(i + 2, 2).Value = Exhibits[i].CreationDate.ToString();
-                    worksheet.Cell(i + 2, 3).Value = Exhibits[i].Title;
-                    worksheet.Cell(i + 2, 4).Value = Exhibits[i].Author;
-                    worksheet.Cell(i + 2, 5).Value = Exhibits[i].Subject;
+                    worksheet.Cell(i + 2, 1).Value = Exhibits[i].CreationDate.ToString();
+                    worksheet.Cell(i + 2, 2).Value = Exhibits[i].Title;
+                    worksheet.Cell(i + 2, 3).Value = Exhibits[i].Author;
+                    worksheet.Cell(i + 2, 4).Value = Exhibits[i].Subject;
                 }
 
-                var headerRange = worksheet.Range("A1:E1");
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
-                worksheet.Columns().AdjustToContents();
+                FormatWorksheet(worksheet);
+
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
@@ -147,6 +143,20 @@ namespace Library_App.ViewModels
                     MessageBox.Show("Данные успешно экспортированы в Excel.", "Экспорт", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
+        }
+
+        private void FormatWorksheet(IXLWorksheet worksheet)
+        {
+            var headerRange = worksheet.Range(1, 1, 1, worksheet.Columns().Count());
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            var dataRange = worksheet.RangeUsed();
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            worksheet.Columns().AdjustToContents();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using System.Windows;
 using System.Windows.Data;
 
 namespace Library_App.Converters
@@ -30,6 +31,9 @@ namespace Library_App.Converters
                 {
                     result.Append(c);
                 }
+                else
+                    MessageBox.Show($"Разрешен ввод только букв!", "Предупреждение",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             return result.ToString();
         }

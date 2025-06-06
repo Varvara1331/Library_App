@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Library_App.Views;
 using ClosedXML.Excel;
 using System.Diagnostics;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace Library_App.ViewModels
 {
@@ -49,6 +50,7 @@ namespace Library_App.ViewModels
             try
             {
                 var payments = await _context.Payments
+                    .Include(b=>b.ReaderTicketNavigation)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -108,21 +110,29 @@ namespace Library_App.ViewModels
 
                 worksheet.Cell(1, 1).Value = "ДАТА ОПЛАТЫ";
                 worksheet.Cell(1, 2).Value = "№ ЧИТАТЕЛЬСКОГО БИЛЕТА ПЛАТЕЛЬЩИКА";
-                worksheet.Cell(1, 3).Value = "НАЗВАНИЕ УСЛУГИ";
-                worksheet.Cell(1, 4).Value = "СУММА ПЛАТЕЖА";
+                worksheet.Cell(1, 3).Value = "ПЛАТЕЛЬЩИК";
+                worksheet.Cell(1, 4).Value = "НАЗВАНИЕ УСЛУГИ";
+                worksheet.Cell(1, 5).Value = "СУММА ПЛАТЕЖА";
 
                 for (int i = 0; i < Payments.Count; i++)
                 {
+                    var payment = Payments[i];
+                    string reader = payment.ReaderTicketNavigation != null
+                    ? $"{payment.ReaderTicketNavigation.LastName} {payment.ReaderTicketNavigation.FirstName}"
+                                : "Читатель не найден";
+                    if (payment.ReaderTicketNavigation != null)
+                    {
+                        reader = $"{payment.ReaderTicketNavigation.LastName} {payment.ReaderTicketNavigation.FirstName}";
+                    }
                     worksheet.Cell(i + 2, 1).Value = Payments[i].PaymentDate.ToString();
                     worksheet.Cell(i + 2, 2).Value = Payments[i].ReaderTicket;
-                    worksheet.Cell(i + 2, 3).Value = Payments[i].NameService;
-                    worksheet.Cell(i + 2, 4).Value = Payments[i].Cost;
+                    worksheet.Cell(i + 2, 3).Value = reader;
+                    worksheet.Cell(i + 2, 4).Value = Payments[i].NameService;
+                    worksheet.Cell(i + 2, 5).Value = Payments[i].Cost;
                 }
 
-                var headerRange = worksheet.Range("A1:D1");
-                headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
-                worksheet.Columns().AdjustToContents();
+                FormatWorksheet(worksheet);
+
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
@@ -145,6 +155,20 @@ namespace Library_App.ViewModels
                     MessageBox.Show("Данные успешно экспортированы в Excel.", "Экспорт", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
+        }
+
+        private void FormatWorksheet(IXLWorksheet worksheet)
+        {
+            var headerRange = worksheet.Range(1, 1, 1, worksheet.Columns().Count());
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            var dataRange = worksheet.RangeUsed();
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            worksheet.Columns().AdjustToContents();
         }
     }
 }

@@ -14,6 +14,7 @@
     </Page.Resources>
     <Grid>
         <Grid Background="#FFE0A9AF" MaxWidth="500">
+            <TextBlock Margin="10,10" Text="*СПРАВКА: В ПОЛЯ НАЗВАНИЯ, АВТОРА МОЖНО ВВЕСТИ ТОЛЬКО БУКВЫ. В ПОЛЯ ГОДА ПУБЛКАЦИИ И КОЛИЧЕСТВА ЭКЗЕМПЛЯРОВ ВВОДЯТСЯ ТОЛЬКО ЦИФРЫ."  Foreground="White" TextWrapping="Wrap"/>
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
                 <TextBlock Text="РЕДАКТИРОВАНИЕ КНИГИ" FontSize="18" FontWeight="Bold" Foreground="White"/>
                 <TextBlock Text="{Binding IdBook, UpdateSourceTrigger=PropertyChanged}" FontSize="15" FontWeight="Bold" Margin="0,5,0,0" Foreground="White"/>
